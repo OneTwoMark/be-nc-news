@@ -6,6 +6,7 @@
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "PGDATABASE=nc_news node ./db/seeds/run-seed.js",
+    "test-seed": "PGDATABASE=nc_news_test node ./db/seeds/run-seed.js",
     "test": "PGDATABASE=nc_news_test jest",
     "prepare": "husky install"
   },
