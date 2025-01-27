@@ -1,7 +1,10 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+Instructions to run locally:
 
+Create new database in .sql
+Create new .env file/s in the directory. 
+Set up PGDATABASE environment variable in the .env file/s with the same name as the database. 
 
 
 --- 
