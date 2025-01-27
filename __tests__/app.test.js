@@ -3,10 +3,11 @@ const app = require ('../app.js')
 const request = require('supertest');
 const db = require('../db/connection.js');
 const seed = require('../db//seeds/seed.js');
+const testData = require('../db/data/test-data')
 /* Set up your test imports here */
 
 /* Set up your beforeEach & afterAll functions here */
-// beforeEach(() => seed({endpointsJson}));
+// beforeEach(() => seed());
 // afterAll(() => db.end())
 
 describe("GET /api", () => {
@@ -19,3 +20,32 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe('GET /api/topics', () => {
+  test('200: Responds with array of topic objects', () => {
+    return request(app)
+    .get('/api/topics')
+    .expect(200)
+    .then((response) => {
+      expect(response.body).toEqual(testData.topicData)
+    })
+  });
+  test('should have slug and description properties', () => {
+    return request(app)
+    .get('/api/topics')
+    .expect(200)
+    .then((response) => {
+      response.body.forEach((topic) => {
+        expect(topic).toHaveProperty('slug')
+        expect(topic).toHaveProperty('description')
+      })
+    })
+  });
+  test('404: responds with error when endpoint not found', () => {
+    return request(app)
+    .get('/api/hello')
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({"error": "Endpoint not found"})
+  })
+})})
