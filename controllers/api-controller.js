@@ -15,8 +15,6 @@ const getArticles = (req, res, next) => {
         fetchArticles().then((articles) => {
             return res.status(200).send({articles})
         })
-    console.log(testData.articleData, "article data")
-    return res.status(200).send(testData.articleData)
 }
 
 const getArticleById = (req, res, next) => {

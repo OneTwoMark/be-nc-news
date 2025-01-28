@@ -28,7 +28,6 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
     console.log("This is error handling block 2")
-    console.log("Error code: ", err.code)
     if (err.status === 400 || err.code === "22P02") {
         return res.status(400).send({error: "Bad Request"})
     }
@@ -37,7 +36,6 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
     console.log("Error: 500")
-    console.log("Error code: ", err.code)
     return res.status(500).send({error: "Internal Server Error"})
 })
 

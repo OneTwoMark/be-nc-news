@@ -49,7 +49,6 @@ describe('GET /api/articles/:article_id', () => {
     .get('/api/articles/1')
     .expect(200)
     .then((response) => {
-      console.log(response.body.article)
       expect(typeof response.body.article).toBe("object")
     })
   });
@@ -106,8 +105,54 @@ describe('GET /api/articles/:article_id', () => {
 });
 
 describe('GET /api/articles', () => {
-  test('should respond with an array of article objects', () => {
+  test('200 should respond with an array of article objects', () => {
     return request(app)
     .get('/api/articles')
+    .expect(200)
+    .then((response) => {
+      response.body.articles.forEach((article) => {
+        expect(typeof article).toBe("object")
+      }) 
+      expect(Array.isArray(response.body.articles)).toBe(true)
+    })
+    })
+    test('200 should return correct properties', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then((response) => {
+      const [article] = response.body.articles;
+      expect(article).toHaveProperty('author')
+      expect(article).toHaveProperty('title')
+      expect(article).toHaveProperty('article_id')
+      expect(article).toHaveProperty('topic')
+      expect(article).toHaveProperty('created_at')
+      expect(article).toHaveProperty('votes')
+      expect(article).toHaveProperty('article_img_url')
+      expect(article).toHaveProperty('comment_count')
+      expect(article).not.toHaveProperty('body')
+    })
+    });
+    test('should be sorted by date in descending order', () => {
+      return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then((response) => {
+        const articles = response.body.articles;
+        const dates = articles.map((article) => {
+         return new Date(article.created_at)
+        })
+        for (let i = 0; i < articles.length - 1; i++) {
+          expect(dates[i].getTime()).toBeGreaterThanOrEqual(dates[i+1].getTime())
+        }
+      }) 
+    });
+    test.only('404: responds with error when endpoint not found', () => {
+      return request(app)
+      .get('/api/hello')
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toEqual({"error": "Endpoint not found"})
+      })
+    })
   });
-});
