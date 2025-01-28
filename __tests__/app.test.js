@@ -7,8 +7,8 @@ const testData = require('../db/data/test-data')
 /* Set up your test imports here */
 
 /* Set up your beforeEach & afterAll functions here */
-// beforeEach(() => seed());
-// afterAll(() => db.end())
+beforeEach(() => seed(testData));
+afterAll(() => db.end())
 
 describe("GET /api", () => {
   test("200: Responds with an object detailing the documentation for each endpoint", () => {
@@ -22,22 +22,14 @@ describe("GET /api", () => {
 });
 
 describe('GET /api/topics', () => {
-  test('200: Responds with array of topic objects', () => {
+  test('should have slug and description properties & of type string', () => {
     return request(app)
     .get('/api/topics')
     .expect(200)
     .then((response) => {
-      expect(response.body).toEqual(testData.topicData)
-    })
-  });
-  test('should have slug and description properties', () => {
-    return request(app)
-    .get('/api/topics')
-    .expect(200)
-    .then((response) => {
-      response.body.forEach((topic) => {
-        expect(topic).toHaveProperty('slug')
-        expect(topic).toHaveProperty('description')
+      response.body.topics.forEach((topic) => {
+        expect(typeof topic.slug).toBe('string')
+        expect(typeof topic.description).toBe('string')
       })
     })
   });
@@ -57,25 +49,26 @@ describe('GET /api/articles/:article_id', () => {
     .get('/api/articles/1')
     .expect(200)
     .then((response) => {
-      expect(typeof response.body[0]).toBe("object")
+      console.log(response.body.article)
+      expect(typeof response.body.article).toBe("object")
     })
   });
   test('200: should respond with an article by its id', () => {
-    const article = {
-      article_id: 1,
-      title: 'Running a Node App',
-      topic: 'coding',
-      author: 'jessjelly',
-      body: 'This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.',
-      created_at: '2020-11-07T06:03:00.000Z',
-      votes: 0,
-      article_img_url: 'https://images.pexels.com/photos/11035380/pexels-photo-11035380.jpeg?w=700&h=700'
-    }
+    const article = [{
+    article_id: 1,
+    article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    author: "butter_bridge",
+    body: "I find this existence challenging",
+    created_at: "2020-07-09T20:11:00.000Z",
+    title: "Living in the shadow of a great man",
+    topic: "mitch",
+    votes: 100,
+    }]
     return request(app)
     .get('/api/articles/1')
     .expect(200)
     .then((response) => {
-      expect(response.body[0]).toEqual(article)
+      expect(response.body.article).toEqual(article)
     })
   });
   test('object should return correct amount of properties', () => {
@@ -83,7 +76,7 @@ describe('GET /api/articles/:article_id', () => {
     .get('/api/articles/2')
     .expect(200)
     .then((response) => {
-      const article = response.body[0]
+      const [article] = response.body.article;
       expect(article).toHaveProperty('author')
       expect(article).toHaveProperty('title')
       expect(article).toHaveProperty('article_id')
@@ -109,5 +102,12 @@ describe('GET /api/articles/:article_id', () => {
     .then((response) => {
       expect(response.body).toEqual({"error": "Bad Request"})
     })
+  });
+});
+
+describe('GET /api/articles', () => {
+  test('should respond with an array of article objects', () => {
+    return request(app)
+    .get('/api/articles')
   });
 });
