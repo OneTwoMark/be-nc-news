@@ -1,23 +1,30 @@
-const {selectArticleById} = require('../models/api.model')
+const {selectArticleById, fetchTopics, fetchArticles} = require('../models/api.model')
 const endpointsJson = require("../endpoints.json");
-const testData = require('../db/data/test-data')
 
-getApi = (req, res, next) => {
+const getApi = (req, res, next) => {
    return res.status(200).send({ endpoints: endpointsJson })
 }
 
-getTopics = (req, res, next) => {
-    return res.status(200).send(testData.topicData)
+const getTopics = (req, res, next) => {
+        fetchTopics().then((topics) => {
+            return res.status(200).send({topics})
+        })
 }
 
-getArticleById = (req, res, next) => {
+const getArticles = (req, res, next) => {
+        fetchArticles().then((articles) => {
+            return res.status(200).send({articles})
+        })
+}
+
+const getArticleById = (req, res, next) => {
     const {article_id} = req.params;
     selectArticleById(article_id).then((article) => {
-        res.status(200).send(article)
+        res.status(200).send({article})
     })
     .catch((err) => {
         console.log("Error for getArticleById")
         next(err)
     })
 }
-module.exports = {getApi, getTopics, getArticleById};
+module.exports = {getApi, getTopics, getArticleById, getArticles};
