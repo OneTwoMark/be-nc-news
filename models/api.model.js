@@ -78,4 +78,28 @@ const fetchCommentsById = (article_id) => {
     })
 }
 
-module.exports = {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById};
+const insertComment = ({username, body}, article_id) => {
+    return db
+    .query(`INSERT INTO comments(author, body, article_id) VALUES($1, $2, $3) RETURNING *;`,
+        [username, body, article_id]
+    )
+    .then((result) => {
+        if (username, body, article_id) {
+        const [commentBody] = result.rows
+        return commentBody.body;
+        } else {
+          Promise.reject({ // err occured naturally before this manual one for 400: missing property
+            staus: 400,
+            msg: "Bad Request"
+          })  
+        }
+        
+    })
+}
+
+module.exports = {selectArticleById, 
+    fetchTopics, 
+    fetchArticles, 
+    fetchCommentsById, 
+    insertComment
+};

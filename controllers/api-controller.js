@@ -1,4 +1,4 @@
-const {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById} = require('../models/api.model')
+const {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById, insertComment} = require('../models/api.model')
 const endpointsJson = require("../endpoints.json");
 
 const getApi = (req, res, next) => {
@@ -39,4 +39,22 @@ const getCommentsById = (req, res, next) => {
     })
 }
 
-module.exports = {getApi, getTopics, getArticleById, getArticles, getCommentsById};
+const postComment = (req, res, next) => {
+    const newComment = req.body;
+    const {article_id} = req.params;
+    insertComment(newComment, article_id).then((comment) => {
+        res.status(201).send({comment})
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
+module.exports = {
+    getApi, 
+    getTopics, 
+    getArticleById, 
+    getArticles, 
+    getCommentsById, 
+    postComment
+};
