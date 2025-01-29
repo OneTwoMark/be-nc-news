@@ -221,3 +221,48 @@ describe('GET /api/articles', () => {
     })
     });
   });
+
+  describe('POST /api/articles/:article_id/comments', () => {
+    test('201 should respond with comment object, with username and body properties', () => {
+      const newComment = {
+        username: "lurker",
+        body: "Now comes the part where we throw our heads back and laugh"
+      }
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+      const commentResponse = response.body.comment;
+      console.log(response.body)
+      expect(newComment.body).toEqual(commentResponse);
+      });
+    });
+    test('400 should respond with error if provided with missing properties ', () => {
+      const newComment = {
+        body: "Now comes the part where we throw our heads back and laugh"
+      }
+      return request(app)
+      .post('/api/articles/1/comments')
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+      const {error} = response.body
+      expect(error).toEqual("Bad Request"); 
+      })
+    });
+    test('401 should respond with error if provided endpoint that doesnt exist ', () => {
+      const newComment = {
+        username: "lurker",
+        body: "Now comes the part where we throw our heads back and laugh"
+      }
+      return request(app)
+      .post('/api/articles/1/commentz!')
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+      const {error} = response.body
+      expect(error).toEqual("Endpoint not found"); 
+      })
+    });
+  });

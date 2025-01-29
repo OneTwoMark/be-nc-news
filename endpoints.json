@@ -51,5 +51,16 @@
       "votes": 0,
       "created_at": "2020-11-03T21:00:00.000Z"
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment and returns it as a response",
+    "queries": ["author", "body", "comment_id", "votes"],
+    "exampleRequest": {
+      "username": "lurker",
+      "comment": "Now comes the part where we throw our heads back and laugh"
+    },
+    "exampleResponse":  
+      "Now comes the part where we throw our heads back and laugh"
+    
   }
   }
