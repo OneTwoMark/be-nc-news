@@ -266,3 +266,80 @@ describe('GET /api/articles', () => {
       })
     });
   });
+
+  describe('PATCH /api/articles/:article_id', () => {
+    test('should respond with an article with correct properties', () => {
+      const newVotes = {inc_votes: 50}
+      return request(app)
+      .patch('/api/articles/1')
+      .send(newVotes)
+      .expect(200)
+        .then((response) => {
+          const [article] = (response.body.article)
+          expect(article).toHaveProperty('article_id')
+          expect(article).toHaveProperty('title')
+          expect(article).toHaveProperty('topic')
+          expect(article).toHaveProperty('author')
+          expect(article).toHaveProperty('body')
+          expect(article).toHaveProperty('created_at')
+          expect(article).toHaveProperty('votes')
+          expect(article).toHaveProperty('article_img_url')
+        })
+    });
+    test('200 should patch only article of ID specified', () => {
+      const newVotes = {inc_votes: 50}
+      return request(app)
+      .patch('/api/articles/1')
+      .send(newVotes)
+      .expect(200)
+        .then((response) => {
+          const [article] = response.body.article;
+          expect(article.article_id).toBe(1)
+        })
+      })
+      test('200 should increment the vote by amount specified', async () => {
+        const beforePatchQuery = await db.query(`
+          SELECT * FROM articles
+          WHERE article_id = 1
+          `)
+        const [beforePatch] = beforePatchQuery.rows
+      const newVotes = {inc_votes: 50}
+      const response = await request(app)
+      .patch('/api/articles/1')
+      .send(newVotes)
+      .expect(200)
+          const [afterPatch] = response.body.article;
+          expect(beforePatch.votes).toBe(100)
+          expect(afterPatch.votes).toBe(150)
+      });
+      test('404 should return error if ID not found', () => {
+        const newVotes = {inc_votes: 50}
+        return request(app)
+        .patch('/api/articles/999')
+        .send(newVotes)
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toEqual("ID Not found")
+        })
+      });
+      test('404 should return error for valid ID but missing directory', () => {
+        const newVotes = {inc_votes: 50}
+        return request(app)
+        .patch('/api/articlezzz/1')
+        .send(newVotes)
+        .expect(404)
+        .then((response) => {
+          expect(response.body.error).toEqual("Endpoint not found")
+        })
+      });
+      test('400 should return error for invalid votes type', () => {
+        const newVotes = {inc_votes: "over 9000"}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(newVotes)
+        .expect(400)
+        .then((response) => {
+          expect(response.body.error).toEqual("Bad Request")
+        })
+      });
+    });

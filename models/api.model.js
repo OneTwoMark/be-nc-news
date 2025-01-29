@@ -97,9 +97,39 @@ const insertComment = ({username, body}, article_id) => {
     })
 }
 
+const updateArticle = (votes, id) => {
+    return db
+    .query(`
+        UPDATE articles 
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *;`,
+    [votes, id])
+    .then((response) => {
+        if (typeof Number(id) !== "number" || typeof Number(votes) !== "number"){
+            console.log("not a number")
+            return Promise.reject({
+                status: 400,
+                msg: "Bad Request"
+            })
+        }
+        else if (response.rows.length === 0) {
+            console.log("Article_ID not found")
+            return Promise.reject({
+                status: 404,
+                msg: "ID Not found"
+            })
+        } else {
+            console.log("ID found")
+            return response.rows;
+        }
+    })
+};
+
 module.exports = {selectArticleById, 
     fetchTopics, 
     fetchArticles, 
     fetchCommentsById, 
-    insertComment
+    insertComment,
+    updateArticle
 };
