@@ -4,9 +4,8 @@ const request = require('supertest');
 const db = require('../db/connection.js');
 const seed = require('../db//seeds/seed.js');
 const testData = require('../db/data/test-data')
-/* Set up your test imports here */
+const {toBeSorted} = require('jest-sorted');
 
-/* Set up your beforeEach & afterAll functions here */
 beforeEach(() => seed(testData));
 afterAll(() => db.end())
 
@@ -147,7 +146,7 @@ describe('GET /api/articles', () => {
         }
       }) 
     });
-    test.only('404: responds with error when endpoint not found', () => {
+    test('404: responds with error when endpoint not found', () => {
       return request(app)
       .get('/api/hello')
       .expect(404)
@@ -155,4 +154,70 @@ describe('GET /api/articles', () => {
         expect(response.body).toEqual({"error": "Endpoint not found"})
       })
     })
+  });
+
+  describe('GET /api/articles/:article_id/comments', () => {
+    test('should return an array of objects', () => {
+      return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+        response.body.comments.forEach((comment) => {
+          expect(typeof comment).toBe("object")
+        }) 
+        expect(Array.isArray(response.body.comments)).toBe(true)
+      })
+      })
+    test('should get all comments for only specific article ID.', () => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then((response) => {
+      const comments = response.body.comments;
+      for (let i = 0; i < comments.length -1; i++) {
+        expect(comments[i].article_id).toEqual(comments[i+1].article_id)
+      }
+    })
+    });
+    test('should return the correct comments properties', () => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then((response) => {
+      const [comments] = response.body.comments;
+      expect(comments).toHaveProperty('author')
+      expect(comments).toHaveProperty('comment_id')
+      expect(comments).toHaveProperty('created_at')
+      expect(comments).toHaveProperty('votes')
+      expect(comments).toHaveProperty('body')
+    })
+    });
+    test('should return most recent comments first', () => {
+    return request(app)
+    .get('/api/articles/1/comments')
+    .expect(200)
+    .then((response) => {
+      const comments = response.body.comments;
+      const sortedComments = comments.map((comment) => {
+        return comment.created_at
+      })
+      expect(sortedComments).toBeSorted({descending: true})
+    })
+    });
+    test('404: responds with error when endpoint not found', () => {
+    return request(app)
+    .get('/api/articles/1/dogs')
+    .expect(404)
+    .then((response) => {
+      expect(response.body).toEqual({"error": "Endpoint not found"})
+    })
+    });
+    test('400: should return bad request for invalid ID', () => {
+    return request(app)
+    .get('/api/articles/99-.9/comments')
+    .expect(400)
+    .then((response) => {
+      expect(response.body).toEqual({"error": "Bad Request"})
+    })
+    });
   });
