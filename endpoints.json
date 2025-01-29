@@ -60,7 +60,23 @@
       "comment": "Now comes the part where we throw our heads back and laugh"
     },
     "exampleResponse":  
-      "Now comes the part where we throw our heads back and laugh"
-    
+      "Now comes the part where we throw our heads back and laugh" 
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "updates article votes and returns article",
+    "queries": ["author", "topic", "sort_by", "order"],
+    "exampleRequest": {
+      "inc_votes": 50
+    },
+    "exampleResponse": {
+      "article_id": 1,
+      "title": "Living in the shadow of a great man",
+      "topic": "mitch",
+      "author": "butter_bridge",
+      "body": "I find this existence challenging",
+      "created_at": "2020-07-09T20:11:00.000Z",
+      "votes": 150,
+      "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    }
   }
   }

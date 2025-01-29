@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const {getApi, getTopics, getArticleById, getArticles, getCommentsById, postComment} = require('./controllers/api-controller.js')
+const {getApi, getTopics, getArticleById, getArticles, getCommentsById, postComment, patchArticle} = require('./controllers/api-controller.js')
 
 app.use(express.json());
 
@@ -15,6 +15,8 @@ app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getCommentsById)
 
 app.post('/api/articles/:article_id/comments', postComment)
+
+app.patch('/api/articles/:article_id', patchArticle)
 
 app.all('*', (req, res) => {
     console.log("Caught in app.all")
