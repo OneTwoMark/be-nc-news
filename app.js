@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const {getApi, getTopics, getArticleById, getArticles} = require('./controllers/api-controller.js')
+const {getApi, getTopics, getArticleById, getArticles, getCommentsById} = require('./controllers/api-controller.js')
 
 app.use(express.json());
 
@@ -12,7 +12,10 @@ app.get('/api/articles/:article_id', getArticleById)
 
 app.get('/api/articles', getArticles)
 
+app.get('/api/articles/:article_id/comments', getCommentsById)
+
 app.all('*', (req, res) => {
+    console.log("Caught in app.all")
     console.log("Error: 404")
     return res.status(404).send({error: "Endpoint not found"})
 })
