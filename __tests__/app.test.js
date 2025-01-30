@@ -417,11 +417,11 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then((response) => {
           const users = response.body
+          expect(Array.isArray(users)).toBe(true)
+          expect(users.length).toBeGreaterThan(0)
           users.forEach((user) => {
             expect(typeof user).toBe("object")
           }) 
-          
-          expect(Array.isArray(users)).toBe(true)
         })
       });
       test('200 checks for correct properties and of correct type', () => {
@@ -430,21 +430,12 @@ describe('GET /api/articles', () => {
         .expect(200)
         .then((response) => {
           const users = response.body
+          expect(users.length).toBeGreaterThan(0)
           users.forEach((user) => {
             expect(typeof user.username).toBe('string')
             expect(typeof user.name).toBe('string')
             expect(typeof user.avatar_url).toBe('string')
           }) 
       });
-    });
-    test('200 should check response is not empty', () => {
-      return request(app)
-        .get('/api/users')
-        .expect(200)
-        .then((response) => {
-          const users = response.body
-          expect(Array.isArray(users)).toBe(true)
-          expect(users.length).toBeGreaterThan(0)
-        })
     });
   })
