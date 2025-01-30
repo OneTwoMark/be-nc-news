@@ -172,7 +172,6 @@ describe('GET /api/articles', () => {
       .expect(400)
       .then((response) => {
         const error = response.body
-        console.log(error)
         expect(error.error).toBe("Bad Request")
       })
     });
@@ -182,7 +181,6 @@ describe('GET /api/articles', () => {
       .expect(400)
       .then((response) => {
         const error = response.body
-        console.log(error)
         expect(error.error).toBe("Bad Request")
     });
   });
