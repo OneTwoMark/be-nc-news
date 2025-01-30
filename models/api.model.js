@@ -8,8 +8,7 @@ const fetchTopics = () => {
     })
 }
 
-const fetchArticles = ({sort_by = "created_at", order = "desc"}) => { 
-
+const fetchArticles = ({topic, sort_by = "created_at", order = "desc"}) => { 
     if (sort_by) {
         const greenlist = ["author", "title", "article_id", "topic", "created_at", "votes",
              "article_img_url", "comment_count"]
@@ -28,7 +27,9 @@ const fetchArticles = ({sort_by = "created_at", order = "desc"}) => {
         })
     }
 
-    const query = `SELECT 
+    let queryValues = [];
+    
+    let query = `SELECT 
             articles.author,
             articles.title,
             articles.article_id,
@@ -38,11 +39,28 @@ const fetchArticles = ({sort_by = "created_at", order = "desc"}) => {
             articles.article_img_url,
             COUNT(comments.comment_id) AS comment_count
         FROM articles
-        LEFT JOIN comments ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY articles.${sort_by} ${order};`
+        LEFT JOIN comments ON articles.article_id = comments.article_id`
+
+    if (topic) {
+        const greenlist = ["cats", "mitch"]
+        if (!greenlist.includes(topic)) {
+            return Promise.reject({
+                status: 400,
+                error: "Bad Request"
+            })
+        } else {
+        queryValues.push(topic)
+        query += `
+        WHERE topic = $1`   
+        }
+    }
+    
+    query += `
+    GROUP BY articles.article_id
+    ORDER BY articles.${sort_by} ${order}`
+    
     return db
-    .query(query)
+    .query(query, queryValues)
     .then((result) => {
         return result.rows
     })

@@ -184,6 +184,61 @@ describe('GET /api/articles', () => {
         expect(error.error).toBe("Bad Request")
     });
   });
+    test('200 should filter the articles by the topic value specified in the query', () => {
+      return request(app)
+      .get('/api/articles?topic=mitch')
+      .expect(200)
+      .then((response) => {
+        const articles = response.body.articles
+        expect(articles.length).toBeGreaterThan(0)
+        articles.forEach((article) => {
+          expect(article.topic).toBe("mitch")
+        })
+      })
+    });
+    test('200 should return correct properties and of correct type in article objects', () => {
+      return request(app)
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then((response) => {
+        const articles = response.body.articles
+        expect(articles.length).toBeGreaterThan(0)
+        articles.forEach((article) => {
+          expect(typeof article.author).toBe("string")
+          expect(typeof article.title).toBe("string")
+          expect(typeof article.article_id).toBe("number")
+          expect(typeof article.topic).toBe("string")
+          expect(typeof article.created_at).toBe("string")
+          expect(typeof article.votes).toBe("number")
+          expect(typeof article.article_img_url).toBe("string")
+          expect(typeof article.comment_count).toBe("string")
+        })
+      })
+    });
+    test('200 endpoint should respond with all articles If the query is omitted', () => {
+      return request(app)
+      .get('/api/articles?topic=cats')
+      .expect(200)
+      .then((queryResponse) => {
+        const firstResponse = queryResponse.body.articles
+      
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response) => {
+        const secondResponse = response.body.articles
+        expect(secondResponse.length).toBeGreaterThan(firstResponse.length)
+      })})
+    });
+    test('400 should respond with error if given invalid topic', () => {
+      return request(app)
+      .get('/api/articles?topic=dogs')
+      .expect(400)
+      .then((response) => {
+        const error = response.body
+        expect(error.error).toBe("Bad Request") 
+      })
+    });
 })
 
   describe('GET /api/articles/:article_id/comments', () => {
