@@ -355,3 +355,28 @@ describe('GET /api/articles', () => {
         })
       });
     });
+
+    describe('CORE: DELETE /api/comments/:comment_id', () => {
+      test('204 should delete the given comment by comment id', () => {
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204);
+      });
+      test('404 responds with an appropriate status and error message when given a non-existent comment', () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then((response) => {
+        expect(response.body.msg).toBe('No comments with this ID');
+      });
+      });
+      test('400 responds with an appropriate status and error message when given an invalid id', () => {
+        return request(app)
+        .delete('/api/comments/not-an-id')
+        .expect(400)
+        .then((response) => {
+          console.log(response.body)
+        expect(response.body.error).toBe('Bad Request');
+      });
+      });
+    });

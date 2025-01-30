@@ -132,10 +132,34 @@ const updateArticle = (votes, id) => {
     })
 };
 
+const fetchCommentToDelete = (comment_id) => {
+    
+    if (typeof Number(comment_id) !== "number") {
+        return Promise.reject({
+          status: 400,
+          msg: 'Bad Request'
+        })
+    }
+    return db.query('SELECT * FROM comments WHERE comment_id = $1;', [comment_id])
+    .then((selected) => { 
+      if (selected.rows.length === 0 && typeof Number(comment_id) === "number") {
+        return Promise.reject({
+          status: 404,
+          msg: 'No comments with this ID'
+        })
+    } else {
+    return db.query('DELETE FROM comments WHERE comment_id = $1;', [comment_id])
+    .then((result) => {
+      return result.rows
+      });
+  }})
+}
+
 module.exports = {selectArticleById, 
     fetchTopics, 
     fetchArticles, 
     fetchCommentsById, 
     insertComment,
-    updateArticle
+    updateArticle,
+    fetchCommentToDelete
 };

@@ -1,4 +1,4 @@
-const {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById, insertComment, updateArticle} = require('../models/api.model')
+const {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById, insertComment, updateArticle, fetchCommentToDelete} = require('../models/api.model')
 const endpointsJson = require("../endpoints.json");
 
 const getApi = (req, res, next) => {
@@ -61,6 +61,16 @@ const patchArticle = (req, res, next) => {
     })
 }
 
+const deleteComment = (req, res, next) => {
+    const {comment_id} = req.params
+    fetchCommentToDelete(comment_id).then((result) => {
+        res.status(204).send(result)
+    })
+    .catch((err) => {
+        next(err)
+    })
+}
+
 module.exports = {
     getApi, 
     getTopics, 
@@ -68,5 +78,6 @@ module.exports = {
     getArticles, 
     getCommentsById, 
     postComment,
-    patchArticle
+    patchArticle,
+    deleteComment
 };
