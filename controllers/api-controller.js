@@ -1,4 +1,4 @@
-const {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById, insertComment, updateArticle, fetchCommentToDelete} = require('../models/api.model')
+const {selectArticleById, fetchTopics, fetchArticles, fetchCommentsById, insertComment, updateArticle, fetchCommentToDelete, selectUsers} = require('../models/api.model')
 const endpointsJson = require("../endpoints.json");
 
 const getApi = (req, res, next) => {
@@ -71,6 +71,12 @@ const deleteComment = (req, res, next) => {
     })
 }
 
+const getUsers = (req, res, next) => {
+    selectUsers().then((users) => {
+        res.status(200).send(users)
+    })
+}
+
 module.exports = {
     getApi, 
     getTopics, 
@@ -79,5 +85,6 @@ module.exports = {
     getCommentsById, 
     postComment,
     patchArticle,
-    deleteComment
+    deleteComment,
+    getUsers
 };
