@@ -162,11 +162,23 @@ describe('GET /api/articles', () => {
       .get('/api/articles/1/comments')
       .expect(200)
       .then((response) => {
+        console.log(response.body, "test log")
         response.body.comments.forEach((comment) => {
           expect(typeof comment).toBe("object")
         }) 
+        
         expect(Array.isArray(response.body.comments)).toBe(true)
       })
+      })
+    test('200 responds with empty array when fetching an article with no associated comments', () => {
+      return request(app)
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then((response) => {
+        const comments = response.body.comments
+        console.log(comments)
+        expect(comments).toEqual([]) 
+        })
       })
     test('should get all comments for only specific article ID.', () => {
     return request(app)

@@ -53,11 +53,10 @@ const selectArticleById = (article_id) => {
     })
 }
 
-const fetchCommentsById = (article_id) => {
-    return db
-    .query(`SELECT * FROM comments WHERE article_id = $1
-            ORDER BY comments.created_at DESC`, [article_id])
-    .then((result) => {
+const fetchCommentsById = async (article_id) => {
+    const commentsResult = await db.query(`
+        SELECT * FROM comments WHERE article_id = $1
+        ORDER BY comments.created_at DESC`, [article_id])
         if (typeof Number(article_id) !== "number"){
             console.log("not a number")
             return Promise.reject({
@@ -65,17 +64,24 @@ const fetchCommentsById = (article_id) => {
                 msg: "Bad Request"
             })
         }
-        else if (result.rows.length === 0) {
+        if (commentsResult.rows.length === 0) {
+            const articlesResult = await db.query(`
+                SELECT * FROM articles WHERE article_id = $1`
+            , [article_id]) 
+        if (articlesResult.rows.length === 0) {
             console.log("Article_ID not found")
             return Promise.reject({
                 status: 404,
                 msg: "ID Not found"
             })
         } else {
-            console.log("ID found")
-            return result.rows;
+            console.log("ID found, but no comments")
+            return commentsResult.rows;
         }
-    })
+    } else {
+        console.log("ID found")
+        return commentsResult.rows;
+    }  
 }
 
 const insertComment = ({username, body}, article_id) => {
