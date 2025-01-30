@@ -162,7 +162,6 @@ describe('GET /api/articles', () => {
       .get('/api/articles/1/comments')
       .expect(200)
       .then((response) => {
-        console.log(response.body, "test log")
         response.body.comments.forEach((comment) => {
           expect(typeof comment).toBe("object")
         }) 
@@ -356,7 +355,7 @@ describe('GET /api/articles', () => {
       });
     });
 
-    describe('CORE: DELETE /api/comments/:comment_id', () => {
+    describe('DELETE /api/comments/:comment_id', () => {
       test('204 should delete the given comment by comment id', () => {
         return request(app)
         .delete('/api/comments/3')
@@ -380,3 +379,42 @@ describe('GET /api/articles', () => {
       });
       });
     });
+
+    describe('GET /api/users', () => {
+      test('200 should respond with array of objects', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) => {
+          const users = response.body
+          users.forEach((user) => {
+            expect(typeof user).toBe("object")
+          }) 
+          
+          expect(Array.isArray(users)).toBe(true)
+        })
+      });
+      test('200 checks for correct properties and of correct type', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) => {
+          const users = response.body
+          users.forEach((user) => {
+            expect(typeof user.username).toBe('string')
+            expect(typeof user.name).toBe('string')
+            expect(typeof user.avatar_url).toBe('string')
+          }) 
+      });
+    });
+    test('200 should check response is not empty', () => {
+      return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) => {
+          const users = response.body
+          expect(Array.isArray(users)).toBe(true)
+          expect(users.length).toBeGreaterThan(0)
+        })
+    });
+  })

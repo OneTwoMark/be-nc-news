@@ -155,11 +155,19 @@ const fetchCommentToDelete = (comment_id) => {
   }})
 }
 
+const selectUsers = () => {
+    return db.query(`
+        SELECT * FROM users;`).then((response) => {
+            return response.rows
+        })
+}
+
 module.exports = {selectArticleById, 
     fetchTopics, 
     fetchArticles, 
     fetchCommentsById, 
     insertComment,
     updateArticle,
-    fetchCommentToDelete
+    fetchCommentToDelete,
+    selectUsers
 };
