@@ -154,7 +154,37 @@ describe('GET /api/articles', () => {
         expect(response.body).toEqual({"error": "Endpoint not found"})
       })
     })
+    test('200 should take sort by and order queries and respond', () => {
+      return request(app)
+      .get('/api/articles?sort_by=title&order=asc')
+      .expect(200)
+      .then((response) => {
+        const articles = response.body.articles;
+        const sortedTitles = articles.map((article) => {
+        return article.title
+      })
+        expect(sortedTitles).toBeSorted({ascending: true})
+      })
+    });
+    test('400 should respond with error if given invalid sort by', () => {
+      return request(app)
+      .get('/api/articles?sort_by=dogs&order=asc')
+      .expect(400)
+      .then((response) => {
+        const error = response.body
+        expect(error.error).toBe("Bad Request")
+      })
+    });
+    test('400 should respond with error if given invalid order', () => {
+      return request(app)
+      .get('/api/articles?sort_by=title&order=abc')
+      .expect(400)
+      .then((response) => {
+        const error = response.body
+        expect(error.error).toBe("Bad Request")
+    });
   });
+})
 
   describe('GET /api/articles/:article_id/comments', () => {
     test('should return an array of objects', () => {

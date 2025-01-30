@@ -8,7 +8,26 @@ const fetchTopics = () => {
     })
 }
 
-const fetchArticles = () => { 
+const fetchArticles = ({sort_by = "created_at", order = "desc"}) => { 
+
+    if (sort_by) {
+        const greenlist = ["author", "title", "article_id", "topic", "created_at", "votes",
+             "article_img_url", "comment_count"]
+        if (!greenlist.includes(sort_by)) {
+            return Promise.reject({
+                status: 400,
+                error: "Bad Request"
+            })
+        } 
+    }
+
+    if (order !== "desc" && order !== "asc") {
+        return Promise.reject({
+            status: 400,
+            error: "Bad Request"
+        })
+    }
+
     const query = `SELECT 
             articles.author,
             articles.title,
@@ -21,7 +40,7 @@ const fetchArticles = () => {
         FROM articles
         LEFT JOIN comments ON articles.article_id = comments.article_id
         GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC;`
+        ORDER BY articles.${sort_by} ${order};`
     return db
     .query(query)
     .then((result) => {
