@@ -62,6 +62,10 @@ const fetchArticles = ({topic, sort_by = "created_at", order = "desc"}) => {
     return db
     .query(query, queryValues)
     .then((result) => {
+        const articles = result.rows; 
+        articles.forEach((article) => {
+            article.comment_count = Number(article.comment_count)
+        })
         return result.rows
     })
 }

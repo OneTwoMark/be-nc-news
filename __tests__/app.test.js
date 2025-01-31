@@ -106,7 +106,7 @@ describe('GET /api/articles/:article_id', () => {
 });
 
 describe('GET /api/articles', () => {
-  test.only('200 should respond with an array of article objects', () => {
+  test('200 should respond with an array of article objects', () => {
     return request(app)
     .get('/api/articles')
     .expect(200)
@@ -215,7 +215,7 @@ describe('GET /api/articles', () => {
           expect(typeof article.created_at).toBe("string")
           expect(typeof article.votes).toBe("number")
           expect(typeof article.article_img_url).toBe("string")
-          expect(typeof article.comment_count).toBe("string")
+          expect(typeof article.comment_count).toBe("number")
         })
       })
     });
