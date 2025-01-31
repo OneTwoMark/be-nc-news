@@ -106,11 +106,13 @@ describe('GET /api/articles/:article_id', () => {
 });
 
 describe('GET /api/articles', () => {
-  test('200 should respond with an array of article objects', () => {
+  test.only('200 should respond with an array of article objects', () => {
     return request(app)
     .get('/api/articles')
     .expect(200)
     .then((response) => {
+      const articles = response.body.articles
+      expect(articles.length).toBeGreaterThan(0)
       response.body.articles.forEach((article) => {
         expect(typeof article).toBe("object")
       }) 
