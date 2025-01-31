@@ -27,7 +27,6 @@ const getArticleById = (req, res, next) => {
         res.status(200).send({article})
     })
     .catch((err) => {
-        console.log("Error for getArticleById")
         next(err)
     })
 }
@@ -38,7 +37,6 @@ const getCommentsById = (req, res, next) => {
         res.status(200).send({comments})
     })
     .catch((err) => {
-        console.log("Error for getCommentsById")
         next(err)
     })
 }
