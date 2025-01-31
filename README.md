@@ -19,14 +19,6 @@ npm install - to install project dependencies
 
 npm run setup-dbs 
 
-### Seeding the local database
-
-npm run seed
-
-### Running Tests
-
-npm test
-
 ### Environment variables
 
 You need to create two .env files in the root directory of your project to configure the database connections.
@@ -39,13 +31,18 @@ PGDATABASE=nc_news
 Create a file named .env.test with the following content:
 PGDATABASE=nc_news_test
 
+### Seeding the local database
+
+npm run seed
+
+### Running Tests
+
+npm test
+
+
 ## Minimum Versions
 - **Node.js**: v14.x or higher (recommended), v10.x (minimum)
 - **Postgres**: v12.x or higher 
-- **dotenv**: v16.0.0 or higher
-- **express**: v4.21.2 or higher
-- **pg**: v8.7.3 or higher
-- **pg-format**: v1.0.4 or higher
 
 ## Scripts
 
