@@ -67,26 +67,47 @@ const fetchArticles = ({topic, sort_by = "created_at", order = "desc"}) => {
 }
 
 const selectArticleById = (article_id) => {
+    
+    let query = `      
+        SELECT 
+        articles.author,
+        articles.body,
+        articles.title,
+        articles.article_id,
+        articles.topic,
+        articles.created_at,
+        articles.votes,
+        articles.article_img_url,
+        COUNT(comments.comment_id) AS comment_count
+        FROM articles
+        LEFT JOIN comments ON articles.article_id = comments.article_id
+        WHERE articles.article_id = $1
+        GROUP BY articles.article_id;`
+
+    console.log("we getting here?")
+
+    if (typeof Number(article_id) !== "number"){
+        console.log("not a number")
+        return Promise.reject({
+            status: 400,
+            msg: "Bad Request"
+        })
+    }
+
+    console.log("but not here?")
+
     return db
-    .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
+    .query(query, [article_id])
     .then((result) => {
-        if (typeof Number(article_id) !== "number"){
-            console.log("not a number")
-            return Promise.reject({
-                status: 400,
-                msg: "Bad Request"
-            })
-        }
-        else if (result.rows.length === 0) {
+        if (result.rows.length === 0) {
             console.log("Article_ID not found")
             return Promise.reject({
                 status: 404,
                 msg: "ID Not found"
             })
-        } else {
-            console.log("ID found")
-            return result.rows;
         }
+        console.log("ID found")
+        return result.rows;
     })
 }
 
