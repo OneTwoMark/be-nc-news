@@ -67,7 +67,6 @@ describe('GET /api/articles/:article_id', () => {
     .get('/api/articles/1')
     .expect(200)
     .then((response) => {
-      console.log(response.body.article)
       expect(response.body.article).toEqual(article)
     })
   });
@@ -263,7 +262,6 @@ describe('GET /api/articles', () => {
       .expect(200)
       .then((response) => {
         const comments = response.body.comments
-        console.log(comments)
         expect(comments).toEqual([]) 
         })
       })
@@ -333,7 +331,6 @@ describe('GET /api/articles', () => {
       .expect(201)
       .then((response) => {
       const commentResponse = response.body.comment;
-      console.log(response.body)
       expect(newComment.body).toEqual(commentResponse);
       });
     });
@@ -462,7 +459,6 @@ describe('GET /api/articles', () => {
         .delete('/api/comments/not-an-id')
         .expect(400)
         .then((response) => {
-          console.log(response.body)
         expect(response.body.error).toBe('Bad Request');
       });
       });

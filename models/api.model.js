@@ -84,29 +84,24 @@ const selectArticleById = (article_id) => {
         WHERE articles.article_id = $1
         GROUP BY articles.article_id;`
 
-    console.log("we getting here?")
 
     if (typeof Number(article_id) !== "number"){
-        console.log("not a number")
         return Promise.reject({
             status: 400,
             msg: "Bad Request"
         })
     }
 
-    console.log("but not here?")
 
     return db
     .query(query, [article_id])
     .then((result) => {
         if (result.rows.length === 0) {
-            console.log("Article_ID not found")
             return Promise.reject({
                 status: 404,
                 msg: "ID Not found"
             })
         }
-        console.log("ID found")
         return result.rows;
     })
 }
@@ -116,7 +111,6 @@ const fetchCommentsById = async (article_id) => {
         SELECT * FROM comments WHERE article_id = $1
         ORDER BY comments.created_at DESC`, [article_id])
         if (typeof Number(article_id) !== "number"){
-            console.log("not a number")
             return Promise.reject({
                 status: 400,
                 msg: "Bad Request"
@@ -127,17 +121,14 @@ const fetchCommentsById = async (article_id) => {
                 SELECT * FROM articles WHERE article_id = $1`
             , [article_id]) 
         if (articlesResult.rows.length === 0) {
-            console.log("Article_ID not found")
             return Promise.reject({
                 status: 404,
                 msg: "ID Not found"
             })
         } else {
-            console.log("ID found, but no comments")
             return commentsResult.rows;
         }
     } else {
-        console.log("ID found")
         return commentsResult.rows;
     }  
 }
@@ -171,20 +162,17 @@ const updateArticle = (votes, id) => {
     [votes, id])
     .then((response) => {
         if (typeof Number(id) !== "number" || typeof Number(votes) !== "number"){
-            console.log("not a number")
             return Promise.reject({
                 status: 400,
                 msg: "Bad Request"
             })
         }
         else if (response.rows.length === 0) {
-            console.log("Article_ID not found")
             return Promise.reject({
                 status: 404,
                 msg: "ID Not found"
             })
         } else {
-            console.log("ID found")
             return response.rows;
         }
     })

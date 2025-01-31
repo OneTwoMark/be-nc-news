@@ -23,14 +23,10 @@ app.delete('/api/comments/:comment_id', deleteComment)
 app.get('/api/users', getUsers)
 
 app.all('*', (req, res) => {
-    console.log("Caught in app.all")
-    console.log("Error: 404")
     return res.status(404).send({error: "Endpoint not found"})
 })
 
 app.use((err, req, res, next) => {
-    console.log("This is error handling block 1")
-    console.log("Error code: ", err.code)
     if (err.status === 404) {
         return res.status(404).send(err)
     }
@@ -38,7 +34,6 @@ app.use((err, req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    console.log("This is error handling block 2")
     if (err.status === 400 || err.code === "22P02" || err.code === "23502") {
         return res.status(400).send({error: "Bad Request"})
     }
@@ -46,7 +41,6 @@ app.use((err, req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    console.log("Error: 500")
     return res.status(500).send({error: "Internal Server Error"})
 })
 
