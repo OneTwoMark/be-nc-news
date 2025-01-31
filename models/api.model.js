@@ -108,7 +108,7 @@ const selectArticleById = (article_id) => {
         }
         const article = result.rows
         article[0].comment_count = Number(article[0].comment_count)
-        return result.rows;
+        return article;
     })
 }
 
