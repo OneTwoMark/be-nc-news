@@ -102,6 +102,8 @@ const selectArticleById = (article_id) => {
                 msg: "ID Not found"
             })
         }
+        const article = result.rows
+        article[0].comment_count = Number(article[0].comment_count)
         return result.rows;
     })
 }
