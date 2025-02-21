@@ -42,7 +42,7 @@ const fetchArticles = ({topic, sort_by = "created_at", order = "desc"}) => {
         LEFT JOIN comments ON articles.article_id = comments.article_id`
 
     if (topic) {
-        const greenlist = ["cats", "mitch"]
+        const greenlist = ["cats", "mitch", "coding, football", "cooking"]
         if (!greenlist.includes(topic)) {
             return Promise.reject({
                 status: 400,
